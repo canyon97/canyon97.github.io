@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#c5372f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Ultimate Favorite Pokemon Picker</title>
+<meta name="description" content="Find your favorite Pokemon of each generation, each type, and of all time.">
+<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
+<link rel="manifest" href="site.webmanifest">
+<link rel="stylesheet" href="mobile.css?v=9">
+</head>
+<body>
+<header class="app-header" id="mobile-header">
+	<div class="app-title-row">
+		<div class="dex-lens" aria-hidden="true">
+			<span class="lens-main"></span>
+			<span class="lens-dot"></span>
+			<span class="lens-dot gold"></span>
+		</div>
+		<h1>Favorite Picker</h1>
+		<a href="index.html" class="desktop-link">Desktop</a>
+	</div>
+	<div class="app-controls">
+		<label class="ctrl">
+			<select id="language-select" onchange="updateLang()" aria-label="Language">
+				<option value="en">English</option>
+				<option value="pt">Português</option>
+				<option value="fr">Français</option>
+				<option value="es">Español</option>
+				<option value="el">Español (Latino)</option>
+				<option value="de">Deutsch</option>
+				<option value="it">Italiano</option>
+				<option value="ne">Nederlands</option>
+				<option value="ja">日本</option>
+				<option value="ko">한국어</option>
+				<option value="zhs">简中</option>
+				<option value="zht">繁中</option>
+			</select>
+		</label>
+		<label class="ctrl">
+			<span id="modeLabel" class="sr-only">Mode</span>
+			<select id="mode-select" onchange="updateMode()" aria-label="Mode">
+				<option value="1" id="modeStrict">Strict</option>
+				<option value="2" id="modeStandard" selected>Standard</option>
+				<option value="3" id="modeSurplus">Surplus</option>
+				<option value="4" id="modeSilly">Silly</option>
+			</select>
+		</label>
+		<button type="button" class="ctrl-btn" id="btnShinyMode" onclick="MobilePicker.toggleShinyMode()">Shiny</button>
+	</div>
+	<div class="progress-row">
+		<div class="progress-track" aria-hidden="true"><div class="progress-fill" id="progress-fill"></div></div>
+		<span id="progress-label">0 filled</span>
+	</div>
+</header>
+
+<div class="status-banner" id="status-banner" hidden></div>
+
+<div class="browse-sticky">
+	<div class="view-switch" role="tablist" aria-label="Browse by">
+		<button type="button" class="view-tab selected" id="view-gen" role="tab" aria-selected="true" onclick="MobilePicker.setBrowseView('gen')">Generation first</button>
+		<button type="button" class="view-tab" id="view-type" role="tab" aria-selected="false" onclick="MobilePicker.setBrowseView('type')">Type first</button>
+	</div>
+	<nav class="type-rail" id="axis-rail" aria-label="Browse"></nav>
+</div>
+
+<main class="app-main">
+	<section class="type-board" aria-label="Picks">
+		<div class="board-heading">
+			<h2 id="column-title">Generation 1</h2>
+			<p class="board-hint" id="teamInstructions">Fill every type in this generation, then move on.</p>
+		</div>
+		<div id="pick-column"></div>
+	</section>
+
+	<section class="card" id="team-section">
+		<h2 id="Team">Team of six</h2>
+		<p class="card-hint">Tap a slot, then tap any pick above to copy it.</p>
+		<div class="team-grid" id="team-cells"></div>
+	</section>
+
+	<section class="card" id="extras-section">
+		<h2>More favorites</h2>
+		<div class="extras-grid" id="extras-cells"></div>
+	</section>
+
+	<section class="card" id="spinda-section">
+		<h2 id="SpindaTitle">Build-a-Spinda</h2>
+		<p class="card-hint" id="spinda-help">Nudge each spot left/right or up/down, or randomize until dizzy.</p>
+		<div class="spinda-workshop">
+			<div class="spinda-preview" id="spinda-preview"></div>
+			<button type="button" class="btn-secondary" id="btnRandom" onclick="MobilePicker.randomSpinda()">Randomize!</button>
+			<div class="spinda-controls" id="spinda-controls"></div>
+		</div>
+	</section>
+
+	<details class="card backup-card">
+		<summary>Backup &amp; import</summary>
+		<textarea id="import" rows="6" spellcheck="false" placeholder="Your grid code lands here"></textarea>
+		<div class="backup-actions">
+			<button type="button" class="btn-secondary" id="btnExport" onclick="MobilePicker.exportCode()">Export</button>
+			<button type="button" class="btn-secondary" id="btnLoad" onclick="MobilePicker.importCode()">Import</button>
+			<button type="button" class="btn-danger" id="btnReset" onclick="MobilePicker.resetGrid()">Reset grid</button>
+		</div>
+	</details>
+</main>
+
+<footer class="app-footer">
+	<div class="export-switch" role="tablist" aria-label="Image format">
+		<button type="button" class="export-tab selected" id="export-poster" role="tab" aria-selected="true" onclick="MobilePicker.setExportFormat('poster')">Desktop poster</button>
+		<button type="button" class="export-tab" id="export-card" role="tab" aria-selected="false" onclick="MobilePicker.setExportFormat('card')">Phone card</button>
+	</div>
+	<div class="footer-actions">
+		<button type="button" class="btn-primary" id="btnShare" onclick="MobilePicker.sharePoster()">Share poster</button>
+		<button type="button" class="btn-secondary" id="btnPrint" onclick="MobilePicker.saveImage()">Save image</button>
+	</div>
+</footer>
+
+<div class="sheet-backdrop" id="sheet-backdrop" onclick="MobilePicker.closeSheet()"></div>
+<div class="picker-sheet" id="picker-sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" aria-hidden="true" inert>
+	<div class="sheet-handle" aria-hidden="true"></div>
+	<div class="sheet-header">
+		<h3 id="sheet-title">Pick a Pokémon</h3>
+		<p class="sheet-step" id="sheet-step" hidden></p>
+		<div class="sheet-toolbar">
+			<input type="search" id="sheet-search" placeholder="Search name…" autocomplete="off" enterkeyhint="search" oninput="MobilePicker.filterSheet()">
+			<div class="sheet-actions">
+				<button type="button" id="sheet-shiny" onclick="MobilePicker.toggleSheetShiny()">Shiny</button>
+				<button type="button" onclick="MobilePicker.clearCurrentCell()">Clear</button>
+				<button type="button" class="btn-primary" onclick="MobilePicker.closeSheet()">Done</button>
+			</div>
+		</div>
+	</div>
+	<div class="sheet-body">
+		<div class="picker-grid" id="picker-grid"></div>
+		<p class="empty-search" id="empty-search" hidden>No matches.</p>
+	</div>
+</div>
+
+<canvas id="export-canvas" width="2276" height="1770" style="display:none"></canvas>
+<canvas id="card-canvas" width="1080" height="2400" style="display:none"></canvas>
+<a id="downloader" download="pokemon-picker.png" style="display:none"></a>
+
+<script src="dex_mini.js"></script>
+<script src="pokemon_arrays.js?v=2"></script>
+<script src="translate.js?v=2"></script>
+<script src="picker-core.js?v=5"></script>
+<script src="mobile.js?v=8"></script>
+</body>
+</html>

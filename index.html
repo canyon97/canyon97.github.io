@@ -15,7 +15,7 @@
 }
 #grid-wrapper {
 	position: absolute;
-	top: 35px;
+	top: 44px;
 	left: 0px;
 }
 #typebar {
@@ -71,12 +71,12 @@ canvas {
   height: 50px;
 }
 #import {
-  top: 1830px;
+  top: 1840px;
   position: absolute;
   z-index: 4;
 }
 #credits {
-	top: 1810px;
+	top: 1820px;
 	left: 600px;
 	width: 700px;
 	position: absolute;
@@ -86,10 +86,11 @@ canvas {
   position: absolute;
   top: 0px;
   bottom: 0px;
-  border-radius: 25px;
-  background: #b4b4b4;
+  border-radius: 18px;
+  background: #fffdf8;
 	border-style: solid;
-	border-width: 2px;
+	border-width: 3px;
+	border-color: #2c241c;
 }
 .aura {
   z-index: 0;
@@ -120,6 +121,105 @@ canvas {
   position: absolute;
   cursor: pointer;
 }
+
+body {
+	margin: 0;
+	background: #efe6d8;
+	color: #1d1916;
+}
+.desktop-chrome {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 20;
+	height: 44px;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 0 14px;
+	background: linear-gradient(#d4453c, #c5372f 60%, #9e2a24);
+	border-bottom: 3px solid #2c241c;
+	color: #fff;
+	font-family: "Copenhagen Grotesk", system-ui, sans-serif;
+	font-size: 15px;
+	box-sizing: border-box;
+}
+.desktop-chrome .dex-lens {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	margin-right: 6px;
+}
+.desktop-chrome .lens-main {
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	background: radial-gradient(circle at 32% 28%, #fff 0 18%, #7ec8e3 34%, #3d9ad1 68%, #1a5f8a);
+	border: 2px solid #f4fbff;
+	box-shadow: 0 0 0 1px rgba(0,0,0,0.25);
+}
+.desktop-chrome .lens-dot {
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: #ff6b6b;
+	border: 1px solid rgba(0,0,0,0.28);
+}
+.desktop-chrome .lens-dot.gold { background: #e3b341; }
+.desktop-chrome select {
+	position: relative;
+	top: auto;
+	left: auto;
+	height: 28px;
+	border: 2px solid #2c241c;
+	border-radius: 8px;
+	background: #fffdf8;
+	color: #1d1916;
+	font-family: inherit;
+	padding: 0 8px;
+}
+.desktop-chrome label { white-space: nowrap; }
+#mobile-layout-link {
+	margin-left: auto;
+	color: #fff;
+	font-family: "Copenhagen Grotesk", system-ui, sans-serif;
+	text-decoration: none;
+	border: 2px solid #fff;
+	border-radius: 8px;
+	padding: 3px 10px;
+	line-height: 1.3;
+}
+#button-wrapper input {
+	position: relative;
+	top: auto;
+	left: auto;
+	height: 40px;
+	margin-right: 8px;
+	padding: 0 14px;
+	border: 2px solid #2c241c;
+	border-radius: 10px;
+	background: #c5372f;
+	color: #fff;
+	font-family: "Copenhagen Grotesk", system-ui, sans-serif;
+	font-size: 15px;
+	cursor: pointer;
+}
+#btnReset {
+	background: #fffdf8;
+	color: #c5372f;
+}
+#import {
+	border: 2px solid #2c241c;
+	border-radius: 12px;
+	background: #fffdf8;
+	font-family: ui-monospace, monospace;
+}
+#credits {
+	font-family: system-ui, sans-serif;
+	color: #1d1916;
+}
+#credits a { color: #c5372f; }
 
 </style>
 <style id="selection-placement">
@@ -492,78 +592,20 @@ canvas {
 <script src="dex_mini.js"></script>
 <script src="pokemon_arrays.js?v=2"></script>
 <script src="translate.js?v=2"></script>
+<script src="picker-core.js"></script>
 <script language="JavaScript">
-	var zerogen_vers = 2;
-	var domlink = window.location.protocol + "//" + window.location.host + "/";
-	var type_order = ["", "Normal", "Fire", "Water", "Grass", "Electric", "Ice", "Fighting", "Poison", "Ground", "Flying", "Psychic", "Bug", "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy", "Starter", "Gimmick", "Legendary", "Favorite"];
-	var gen_order = ["gen1", "gen2", "gen3", "gen4", "gen5", "gen6", "gen7", "gen8", "gen9", "Favorite"]
-	var type_eles = ["Normal", "Fire", "Water", "Grass", "Electric", "Ice", "Fighting", "Poison", "Ground", "Flying", "Psychic", "Bug", "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy", "Starter", "GimmickForm", "Legend", "FavAlone"];
-	var other_order = ["",
-		"team1", "team2", "team3", "team4", "team5", "team6",
-		"Custom1", "Bird", "Critter", "RegionalBug", "GrassGirl", "Pseudo", "Fossil", "MysteryDungeon", "Baby",
-		"Custom2", "Box", "Mythical", "Mega", "Ultra", "GMax", "Paradox", "Regional", "NewEvolution",
-		"Custom3", "Types", "PokeBall", "Pikaclone", "Eevee", "SpindaTitle", "Vivillon", "Furfrou", "Alcremie",
-		"alc0", "alc7", "alc14", "alc21", "alc28", "alc35", "alc42", "alc49", "alc56"
-	];
-	
-
-	var BOTTOM_ROWS = 0;
-	var TEAM_SLOTS = 6;
-	var ALCREMIE_MIN = other_order.indexOf("Alcremie");
-	var ALCREMIE_MAX = other_order.indexOf("alc56");
-	var SPINDA_BOX = other_order.indexOf("SpindaTitle");
-	var GENERATION_FAV = type_eles.length;
-	var TYPE_FAV = 10;
-	var MAX_BOX = ALCREMIE_MIN;
-	var STARTER_COLUMN = type_order.indexOf("Starter");
-	var MYSTERY_BOX = other_order.indexOf("MysteryDungeon");
-	var DEFAULT_CUSTOM = "Click to customize!";
-
-	var choices = [];
 	var currently_previewing = [];
 	var currently_selecting = null;
 	var currently_filtering = null;
 	var shinyCharm = false;
-	var spriteFile = "Front";
 	var teamSelect = false;
 	var toppings = false;
-	var filter_boxes = [
-		other_order.indexOf("Custom1"),
-		other_order.indexOf("Custom2"),
-		other_order.indexOf("Custom3")
-	]
 	var filterStep = 0;
 
-	var spot_map = {
-		"spot1x": "spot1",
-		"spot1y": "spot1",
-		"spot2x": "spot2",
-		"spot2y": "spot2",
-		"spot3x": "spot3",
-		"spot3y": "spot3",
-		"spot4x": "spot4",
-		"spot4y": "spot4"
-	}
-	var cookie_names = [
-		"gen0", "gen1", "gen2", "gen3", "gen4",
-		"gen5", "gen6", "gen7", "gen8", "gen9",
-		"favs", "spinda"
-	]
-	var swap = {"Front": "Shiny", "Shiny": "Front"};
-
 	function resetChoices() {
-		choices = [[]];
-		for(var c in other_order)
-			choices[0].push("")
-		for(var i=1; i<=TYPE_FAV; i++) {
-			choices.push([]);
-			for(var t in type_order) {
-				choices[i].push("")
-			}
-		}
-		choices[0][SPINDA_BOX] = "SPINDA"
+		PickerCore.resetChoices();
+		choices = PickerCore.choices;
 	}
-	resetChoices();
 	function activateShiny() {
 		shinyCharm = !shinyCharm;
 		//show tooltip
@@ -1038,40 +1080,59 @@ canvas {
 				closeBox();
 			}
 		}else if(!currently_filtering) {
+			if(targetBox.src.match(/Shiny/)) PickerCore.setShiny(currently_selecting[0], currently_selecting[1], true);
 			writeCookie(currently_selecting[0]);
 			closeBox();
 		}
 	}
 	
 	function printTextbox() {
-		var output = "# Don't like my choices? You can overrule them here!\n# Write Code will put a text version of the grid here,\n# Then you can edit the names and Import Code to replace the images.\n# Most Pokemon are just their named capitalized, like SWELLOW.\n# Alternate forms have specific tags, like MEOWTH_2 for Galarian Meowth.\n# You can also use this to keep backups\n";
+		syncAllShinyFromDom();
+		document.getElementById('import').value = PickerCore.serializeGrid(true);
+	}
+	function syncAllShinyFromDom() {
 		for(var g=0; g<choices.length; g++) {
 			for(var t=0; t<choices[g].length; t++) {
 				var ele = document.getElementById('box'+g+"_"+t);
-				if(g == BOTTOM_ROWS && t == 0) {
-					output += zerogen_vers + ",";
-					continue;
-				}
-				if(g == BOTTOM_ROWS && t > ALCREMIE_MIN)
-					continue;
-				if(ele == null) {
-					output += ",";
-					continue;
-				}
-				if(ele.src.match(/Shiny/))
-					output += "&"
-				if(choices[g][t])
-					output += choices[g][t]
-				output += ",";
+				if(!ele) continue;
+				PickerCore.setShiny(g, t, !!ele.src.match(/Shiny/));
 			}
-			output += "\n";
 		}
-		output += "spindaspots,";
-		for(var s in spot_map) {
-			var ax_ele = document.getElementById(s);
-			output += ax_ele.value + ",";
+	}
+	function applyChoicesToDom() {
+		choices = PickerCore.choices;
+		spriteFile = PickerCore.spriteFile;
+		for(var g=0; g<choices.length; g++) {
+			for(var t=0; t<choices[g].length; t++) {
+				var ele = document.getElementById('box'+g+'_'+t);
+				if(!ele) continue;
+				var name = choices[g][t];
+				if(!name) {
+					ele.src = "./blank.png";
+					continue;
+				}
+				var sf = PickerCore.isShiny(g, t) ? "Shiny" : spriteFile;
+				if(sf === "Front" && spriteFile === "Shiny") sf = "Shiny";
+				ele.src = domlink + sf + "/" + name + ".png";
+			}
 		}
-		document.getElementById('import').value = output;
+		applySpindaToDom();
+	}
+	function applySpindaToDom() {
+		var spots = ["spot1", "spot2", "spot3", "spot4"];
+		for(var i=0; i<spots.length; i++) {
+			var sn = spots[i];
+			var style = PickerCore.getSpindaSpotStyle(sn);
+			var spot_ele = document.getElementById(sn);
+			if(spot_ele) {
+				spot_ele.style.left = style.left + "px";
+				spot_ele.style.top = style.top + "px";
+			}
+			var sx = document.getElementById(sn + "x");
+			var sy = document.getElementById(sn + "y");
+			if(sx) sx.value = PickerCore.spindaSpots[sn].x;
+			if(sy) sy.value = PickerCore.spindaSpots[sn].y;
+		}
 	}
 	function loadTextbox(importbox) {
 		var save_cookie = false;
@@ -1079,51 +1140,20 @@ canvas {
 			importbox = document.getElementById('import').value;
 			save_cookie = true;
 		}
-		var lines = importbox.replace(/# ?[^\n]+\n/g, "").split("\n");
-		var gen = -1;
-		for(var l in lines) {
-			if(lines[l] == "" || !lines[l].match(/,/))
-				continue;
-			gen++;
-			if(gen == 0)
-				lines[l] = updateZerogen(lines[l]);
-			if(save_cookie) {
-				setCookie(getCookieName(gen), lines[l]);
-			}
-			var ents = lines[l].split(",");
-			var spinda_spots = false;
-			if(ents[0] && ents[0] == "spindaspots") {
-				randomSpinda(ents);
-				continue;
-			}
-			for(var e in ents) {
-				var name = ents[e].replace("&", "");
-				if(gen == BOTTOM_ROWS && e == SPINDA_BOX)
-					name = "SPINDA";
-				ele = document.getElementById('box'+gen+'_'+e);
-				if(!ele)
-					continue;
-				if(!choices[l] || name == "") {
-					ele.src = "./blank.png";
-					continue;
-				}
-				choices[l][e] = name
-				var sf = spriteFile;
-				if(ents[e].match("&"))
-					sf = "Shiny";
-				ele.src = domlink + sf + "/" + name + ".png";
-			}
-		}
-		
+		PickerCore.deserializeGrid(importbox, save_cookie);
+		choices = PickerCore.choices;
+		applyChoicesToDom();
 	}
 	function resetGrid() {
 		if(confirm(getTranslString("gridConfirm"))) {
 			for(var c in cookie_names) {
-				deleteCookie(cookie_names[c]);
+				PickerCore.deleteCookie(cookie_names[c]);
 			}
-			loadCookies();
+			try { localStorage.removeItem("picker-grid-v1"); } catch(e) {}
+			PickerCore.resetChoices();
+			choices = PickerCore.choices;
+			applyChoicesToDom();
 		}
-		resetChoices();
 	}
 
 	function drawFinal() {
@@ -1275,159 +1305,50 @@ canvas {
 		dbutton.click()
 	}
 	function spindaSpot(ele, axis) {
-		var spot_ele = document.getElementById(spot_map[ele.id])
+		var spotName = spot_map[ele.id];
+		PickerCore.spindaSpots[spotName][axis] = parseInt(ele.value, 10);
+		var style = PickerCore.getSpindaSpotStyle(spotName);
+		var spot_ele = document.getElementById(spotName);
 		if(axis == "x") {
-			var base_left = 1481;
-			spot_ele.style.left = base_left + parseInt(ele.value);
+			spot_ele.style.left = style.left + "px";
 		}else{
-			var base_top = 1616;
-			spot_ele.style.top = base_top - parseInt(ele.value);
+			spot_ele.style.top = style.top + "px";
 		}
-		writeSpindaCookie();
+		PickerCore.writeSpindaCookieRow();
+		PickerCore.saveToStorage();
 	}
 
 	function rand(scale) {
 		return Math.floor(Math.random()*scale)
 	}
 	function randomSpinda(ar) {
-		var spots = ["spot1", "spot2", "spot3", "spot4"];
 		if(!ar) {
-			ar = ["spindaspots"];
-			for(var s in spots) {
-				ar.push(rand(17));
-				ar.push(rand(17));
-			}
+			ar = PickerCore.randomSpindaValues();
+		} else {
+			PickerCore.applySpindaArray(ar);
 		}
-		var base_left = 1481;
-		var base_top = 1616;
-
-		for(var i=0; i<spots.length; i++) {
-			var sname = spots[i];
-			var spot_ele = document.getElementById(sname);
-			var new_x = ar[2*i+1];
-			var new_y = ar[2*i+2];
-			spot_ele.style.left = base_left + parseInt(new_x);
-			spot_ele.style.top = base_top - parseInt(new_y);
-			document.getElementById(sname + "x").value = new_x;
-			document.getElementById(sname + "y").value = new_y;
-		}
-		if(!choices[BOTTOM_ROWS][SPINDA_BOX] == "SPINDA") {
+		applySpindaToDom();
+		if(!choices[BOTTOM_ROWS][SPINDA_BOX]) {
 			choices[BOTTOM_ROWS][SPINDA_BOX] = "SPINDA";
-			writeCookie(BOTTOM_ROWS);
 		}
-		writeSpindaCookie()
+		PickerCore.writeCookieRow(BOTTOM_ROWS);
+		PickerCore.saveToStorage();
 	}
 
 	function calcTypes() {
-		var scores = {};
-		var bottom_skips = [
-			other_order.indexOf("Pikaclone"),
-			other_order.indexOf("SpindaTitle"),
-			other_order.indexOf("Vivillon"),
-			other_order.indexOf("Furfrou"),
-			other_order.indexOf("Alcremie")
-		]
-		for(var t in type_count_array)
-			scores[type_count_array[t]] = 0;
-		for(var g in choices) {
-			for(var m=0; m<choices[g].length; m++) {
-				if(g == BOTTOM_ROWS & bottom_skips.includes(m))
-					continue;
-				var mon_name = choices[g][m];
-				if(!mon_name || mon_name == "")
-					continue;
-				var mon_types = rev_map[mon_name];
-				if(!mon_types)
-					continue;
-				for(let ty in mon_types)
-					scores[mon_types[ty]]++;
-			}
-		}
-
-		type_count_array.sort(function(a, b) {
-			return scores[b] - scores[a];
-		})
-		var fin = [];
-		for(var i=0; i<3; i++) {
-			if(scores[type_count_array[i]] > 0)
-				fin.push(type_count_array[i])
-		}
-		return [fin, scores];
+		return PickerCore.calcTypes();
 	}
-
-	// returns the cookie with the given name,
-	// or undefined if not found
-	function getCookie(name) {
-	  var matches = document.cookie.match(new RegExp(
-		"(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-	  ));
-	  return matches ? decodeURIComponent(matches[1]) : undefined;
-	}
-	function setCookie(name, value) {
-
-	  options = {
-		path: '/',
-	    samesite: 'strict'
-	  };
-	  options.Expires = new Date(new Date().getTime() + 365*24*60*60*1000);
-
-	  if (options.Expires instanceof Date) {
-		options.Expires = options.Expires.toUTCString();
-	  }
-
-	  var updatedCookie = encodeURIComponent(name) + "=" + encodeURIComponent(value);
-
-	  for (var optionKey in options) {
-		updatedCookie += "; " + optionKey;
-		var optionValue = options[optionKey];
-		if (optionValue !== true) {
-		  updatedCookie += "=" + optionValue;
-		}
-	  }
-
-	  document.cookie = updatedCookie;
-	}
-	
-	function deleteCookie(name) {
-	  setCookie(name, "", {
-		'max-age': -1
-	  })
-	}
-	
-	// cookie-fy a gen and save it
 	function writeCookie(g) {
-		var cookie_text = "";
 		for(var t=0; t<choices[g].length; t++) {
 			var ele = document.getElementById('box'+g+"_"+t);
-			if(g == 0 && t == 0) {
-				cookie_text += zerogen_vers + ",";
-				continue;
-			}
-			if(ele == null) {
-				cookie_text += ",";
-				continue;
-			}
-			if(ele.src.match(/Shiny/))
-				cookie_text += "&"
-			if(choices[g][t])
-				cookie_text += choices[g][t]
-			cookie_text += ",";
+			if(ele) PickerCore.setShiny(g, t, !!ele.src.match(/Shiny/));
 		}
-		setCookie(getCookieName(g), cookie_text);
+		PickerCore.writeCookieRow(g);
+		PickerCore.saveToStorage();
 	}
-	function writeSpindaCookie() {
-		var spots = ["spot1", "spot2", "spot3", "spot4"];
-		var cookie_text = "spindaspots,";
-		for(var i=0; i<spots.length; i++) {
-			var sname = spots[i];
-			var spot_ele = document.getElementById(sname);
-			cookie_text += document.getElementById(sname + "x").value;
-			cookie_text += ",";
-			cookie_text += document.getElementById(sname + "y").value;
-			cookie_text += ",";
-		}
-		setCookie("spinda", cookie_text);
-	}
+	function getCookie(name) { return PickerCore.getCookie(name); }
+	function setCookie(name, value) { PickerCore.setCookie(name, value); }
+	function deleteCookie(name) { PickerCore.deleteCookie(name); }
 	function loadCookies() {
 		var searchParams = new URL(location).searchParams;
 		var langCode = searchParams.get("lang");
@@ -1441,58 +1362,17 @@ canvas {
 			remodeArrays();
 			document.getElementById("mode-select").value = MODE.SITE;
 		}
-		var cookie_vals = [];
-		for(var c in cookie_names)
-			cookie_vals.push(",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,");
-		var cookies = document.cookie.split(/; ?/);
-		for(var c in cookies) {
-			var pair = cookies[c].match(/([^=]+) ?= ?([^=;]+)/);
-			if(!pair)
-				continue;
-			var cname = decodeURIComponent(pair[1]);
-			var cval = decodeURIComponent(pair[2]);
-			var g = cookie_names.indexOf(cname);
-			if(cname == "gen0") {
-				let alt = updateZerogen(cval);
-				if(alt != cval) {
-					setCookie("gen0", alt);
-					cval = alt;
-				}
-			}
-			if(g == -1) {
-				//special cookies
-				if(cname == "shiny")
-					spriteFile = swap[spriteFile];
-			}else{
-				cookie_vals[g] = cval;
+		PickerCore.loadFromStorage();
+		choices = PickerCore.choices;
+		spriteFile = PickerCore.spriteFile;
+		applyChoicesToDom();
+		let customs = ["Custom1", "Custom2", "Custom3"];
+		for(let c in customs) {
+			let alt = getCookie(customs[c]);
+			if(alt) {
+				document.getElementById(customs[c]).innerText = alt;
 			}
 		}
-		loadTextbox(cookie_vals.join("\n"));
-	}
-	function getCookieName(g) {
-		if(parseInt(g) < TYPE_FAV)
-			return "gen"+g;
-		if(g == TYPE_FAV)
-			return "favs";
-		return "spinda";
-	}
-	function updateZerogen(str) {
-		let ar = str.split(",");
-		if(ar[0] == zerogen_vers)
-			return str;
-		let v = ar[0] || "1";
-		switch(v) {
-			case "1":
-				// update to 2
-				ar = [
-					2,
-					ar[1], ar[2], ar[3], ar[4], ar[5], ar[6],
-					"", ar[7], ar[8], ar[9], "", ar[10], ar[13], "", ar[34],
-					"", ar[16], ar[17], "", ar[18], ar[15], ar[19], ar[14], ar[35],
-					"", ar[20], ar[21], ar[11], ar[12], ar[22], ar[23], "", ar[24]
-				]
-		}
-		return ar.join(",");
 	}
 	function customize(ele) {
 		let str = prompt("Pick a title for this box:");
@@ -1521,26 +1401,30 @@ canvas {
 </script>
 </head>
 <body onLoad="initialize();">
-Language: <select id="language-select" onchange="updateLang()">
-	<option value="en">English</option>
-	<option value="pt">Português</option>
-	<option value="fr">Français</option>
-	<option value="es">Español</option>
-	<option value="el">Español (Latino)</option>
-	<option value="de">Deutsch</option>
-	<option value="it">Italiano</option>
-	<option value="ne">Nederlands</option>
-	<option value="ja">日本</option>
-	<option value="ko">한국어</option>
-	<option value="zhs">简中</option>
-	<option value="zht">繁中</option>
-</select>
-<span id="modeLabel">Mode</span>: <select id="mode-select" onchange="updateMode()">
-	<option value="1" id="modeStrict">Strict</option>
-	<option value="2" id="modeStandard" selected>Standard</option>
-	<option value="3" id="modeSurplus">Surplus</option>
-	<option value="4" id="modeSilly">Silly</option>
-</select>
+<div class="desktop-chrome">
+	<span class="dex-lens" aria-hidden="true"><span class="lens-main"></span><span class="lens-dot"></span><span class="lens-dot gold"></span></span>
+	Language: <select id="language-select" onchange="updateLang()">
+		<option value="en">English</option>
+		<option value="pt">Português</option>
+		<option value="fr">Français</option>
+		<option value="es">Español</option>
+		<option value="el">Español (Latino)</option>
+		<option value="de">Deutsch</option>
+		<option value="it">Italiano</option>
+		<option value="ne">Nederlands</option>
+		<option value="ja">日本</option>
+		<option value="ko">한국어</option>
+		<option value="zhs">简中</option>
+		<option value="zht">繁中</option>
+	</select>
+	<span id="modeLabel">Mode</span>: <select id="mode-select" onchange="updateMode()">
+		<option value="1" id="modeStrict">Strict</option>
+		<option value="2" id="modeStandard" selected>Standard</option>
+		<option value="3" id="modeSurplus">Surplus</option>
+		<option value="4" id="modeSilly">Silly</option>
+	</select>
+	<a href="mobile.html" id="mobile-layout-link">Mobile layout</a>
+</div>
 <div id="grid-wrapper">
 <!--<img class="back" id="back" src="https://cajunavenger.github.io/background.png" alt="" height="1571" width="2276" onclick="closeBox();"/>-->
 <img class="back" id="back" src="./background4.png" alt="" height="1770" width="2276" onclick="closeBox();"/>
