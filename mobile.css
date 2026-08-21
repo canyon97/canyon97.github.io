@@ -232,7 +232,7 @@ a { color: var(--red); }
 .view-switch {
 	display: flex;
 	gap: 6px;
-	padding: 10px 12px 0;
+	padding: 10px 12px 8px;
 }
 
 .view-tab {
@@ -259,9 +259,11 @@ a { color: var(--red); }
 /* Type / gen chips */
 .type-rail {
 	display: flex;
+	align-items: center;
 	gap: 8px;
-	padding: 10px 12px;
+	padding: 8px 12px 12px;
 	overflow-x: auto;
+	overflow-y: hidden;
 	-webkit-overflow-scrolling: touch;
 	background: var(--bg);
 	border-bottom: 1px solid var(--line);
@@ -273,6 +275,7 @@ a { color: var(--red); }
 .type-chip {
 	flex: 0 0 auto;
 	min-height: 40px;
+	margin: 4px 0;
 	padding: 0 14px;
 	border: 0;
 	border-radius: 999px;
