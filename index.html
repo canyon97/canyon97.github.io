@@ -1,5 +1,24 @@
 <html>
 <head>
+<script>
+(function () {
+	var KEY = "picker-layout";
+	var q = (location.search.match(/[?&]layout=(mobile|desktop)/) || [])[1];
+	function read() { try { return localStorage.getItem(KEY); } catch (e) { return ""; } }
+	function write(v) { try { localStorage.setItem(KEY, v); } catch (e) {} }
+	if (q) write(q);
+	var prefer = q || read();
+	if (!prefer) {
+		var ua = navigator.userAgent || "";
+		var mobile = (navigator.userAgentData && navigator.userAgentData.mobile) ||
+			/Mobi|Android.*Mobile|iPhone|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(ua) ||
+			(/iPad|Android/i.test(ua) && (navigator.maxTouchPoints || 0) > 1) ||
+			(Math.min(screen.width, screen.height) < 800);
+		prefer = mobile ? "mobile" : "desktop";
+	}
+	if (prefer === "mobile") location.replace("/mobile.html");
+})();
+</script>
 <title>Ultimate Favorite Pokemon Picker</title>
 <meta name="description" content="Find your favorite Pokemon of each generation, each type, and of all time.">
 <meta name="keywords" content="Ultimate, Favorite, Pokemon, Pokémon, Picker">
@@ -1423,7 +1442,7 @@ body {
 		<option value="3" id="modeSurplus">Surplus</option>
 		<option value="4" id="modeSilly">Silly</option>
 	</select>
-	<a href="mobile.html" id="mobile-layout-link">Mobile layout</a>
+	<a href="mobile.html?layout=mobile" id="mobile-layout-link">Mobile layout</a>
 </div>
 <div id="grid-wrapper">
 <!--<img class="back" id="back" src="https://cajunavenger.github.io/background.png" alt="" height="1571" width="2276" onclick="closeBox();"/>-->
