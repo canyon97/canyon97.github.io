@@ -561,6 +561,7 @@ var MobilePicker = (function () {
 		sheet.setAttribute("aria-hidden", "false");
 		sheet.removeAttribute("inert");
 		document.body.classList.add("sheet-open");
+		closeShare(true);
 		refreshCells();
 	}
 
@@ -742,6 +743,28 @@ var MobilePicker = (function () {
 
 	function closeSheetQuiet() {
 		hideSheet(false);
+	}
+
+	function openShare() {
+		closeSheetQuiet();
+		$("share-backdrop").classList.add("open");
+		var sheet = $("share-sheet");
+		sheet.classList.add("open");
+		sheet.setAttribute("aria-hidden", "false");
+		sheet.removeAttribute("inert");
+		document.body.classList.add("sheet-open");
+		$("btnShareOpen").classList.add("open");
+		warmPoster();
+	}
+
+	function closeShare(keepScrollLock) {
+		$("share-backdrop").classList.remove("open");
+		var sheet = $("share-sheet");
+		sheet.classList.remove("open");
+		sheet.setAttribute("aria-hidden", "true");
+		sheet.setAttribute("inert", "");
+		$("btnShareOpen").classList.remove("open");
+		if (!keepScrollLock) document.body.classList.remove("sheet-open");
 	}
 
 	function exportCode() {
@@ -978,7 +1001,9 @@ var MobilePicker = (function () {
 		} catch (e) {}
 		window.addEventListener("resize", syncHeaderHeight);
 		document.addEventListener("keydown", function (ev) {
-			if (ev.key === "Escape") closeSheet();
+			if (ev.key !== "Escape") return;
+			if ($("share-sheet").classList.contains("open")) closeShare();
+			else closeSheet();
 		});
 		markPosterDirty();
 	}
@@ -1004,6 +1029,8 @@ var MobilePicker = (function () {
 		sharePoster: sharePoster,
 		saveImage: saveImage,
 		downloadImage: saveImage,
+		openShare: openShare,
+		closeShare: closeShare,
 		setExportFormat: setExportFormat,
 		setBrowseView: setBrowseView,
 		refreshAll: refreshCells

@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
 <link rel="manifest" href="site.webmanifest">
-<link rel="stylesheet" href="mobile.css?v=9">
+<link rel="stylesheet" href="mobile.css?v=10">
 </head>
 <body>
 <header class="app-header" id="mobile-header">
@@ -21,7 +21,10 @@
 			<span class="lens-dot gold"></span>
 		</div>
 		<h1>Favorite Picker</h1>
-		<a href="index.html?layout=desktop" class="desktop-link">Desktop</a>
+		<div class="header-chips">
+			<a href="index.html?layout=desktop" class="header-chip">Desktop</a>
+			<button type="button" class="header-chip" id="btnShareOpen" onclick="MobilePicker.openShare()">Share</button>
+		</div>
 	</div>
 	<div class="app-controls">
 		<label class="ctrl">
@@ -108,7 +111,12 @@
 	</details>
 </main>
 
-<footer class="app-footer">
+<footer class="share-sheet" id="share-sheet" role="dialog" aria-modal="true" aria-labelledby="share-title" aria-hidden="true" inert>
+	<div class="sheet-handle" aria-hidden="true"></div>
+	<div class="share-header">
+		<h3 id="share-title">Share</h3>
+		<button type="button" class="share-close" onclick="MobilePicker.closeShare()" aria-label="Close">Done</button>
+	</div>
 	<div class="export-switch" role="tablist" aria-label="Image format">
 		<button type="button" class="export-tab selected" id="export-poster" role="tab" aria-selected="true" onclick="MobilePicker.setExportFormat('poster')">Desktop poster</button>
 		<button type="button" class="export-tab" id="export-card" role="tab" aria-selected="false" onclick="MobilePicker.setExportFormat('card')">Phone card</button>
@@ -118,6 +126,8 @@
 		<button type="button" class="btn-secondary" id="btnPrint" onclick="MobilePicker.saveImage()">Save image</button>
 	</div>
 </footer>
+
+<div class="sheet-backdrop" id="share-backdrop" onclick="MobilePicker.closeShare()"></div>
 
 <div class="sheet-backdrop" id="sheet-backdrop" onclick="MobilePicker.closeSheet()"></div>
 <div class="picker-sheet" id="picker-sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" aria-hidden="true" inert>
@@ -148,6 +158,6 @@
 <script src="pokemon_arrays.js?v=2"></script>
 <script src="translate.js?v=2"></script>
 <script src="picker-core.js?v=5"></script>
-<script src="mobile.js?v=8"></script>
+<script src="mobile.js?v=9"></script>
 </body>
 </html>
